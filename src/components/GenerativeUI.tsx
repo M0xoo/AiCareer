@@ -3,11 +3,19 @@ import { MOKHLES_DATA } from '../constants';
 import { Briefcase, MapPin, Calendar, ExternalLink, Sparkles } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
-export const ExperienceTimeline = () => {
+export const ExperienceTimeline = ({ filter }: { filter?: string }) => {
+  const filteredExperience = filter 
+    ? MOKHLES_DATA.experience.filter(exp => 
+        exp.company.toLowerCase().includes(filter.toLowerCase()) || 
+        exp.role.toLowerCase().includes(filter.toLowerCase()) ||
+        exp.skills.some(s => s.toLowerCase().includes(filter.toLowerCase()))
+      )
+    : MOKHLES_DATA.experience;
+
   return (
     <div className="space-y-12 my-6 relative">
       <div className="absolute left-[11px] top-0 bottom-0 w-[1px] bg-zinc-800" />
-      {MOKHLES_DATA.experience.map((exp, index) => (
+      {filteredExperience.map((exp, index) => (
         <motion.div
           key={index}
           initial={{ opacity: 0, x: -20 }}
@@ -56,10 +64,15 @@ export const ExperienceTimeline = () => {
   );
 };
 
-export const SkillsGrid = () => {
+export const SkillsGrid = ({ category }: { category?: string }) => {
+  const skillEntries = Object.entries(MOKHLES_DATA.skills) as [string, string[]][];
+  const filteredSkills = category
+    ? skillEntries.filter(([cat]) => cat.toLowerCase().includes(category.toLowerCase()))
+    : skillEntries;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-      {(Object.entries(MOKHLES_DATA.skills) as [string, string[]][]).map(([category, skills], index) => (
+      {filteredSkills.map(([category, skills], index) => (
         <motion.div
           key={category}
           initial={{ opacity: 0, scale: 0.95 }}
@@ -112,7 +125,7 @@ export const ContactCard = () => {
   );
 };
 
-export const GithubRepos = () => {
+export const GithubRepos = ({ limit = 4 }: { limit?: number }) => {
   const [repos, setRepos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -121,7 +134,7 @@ export const GithubRepos = () => {
       try {
         const response = await fetch('/api/github-repos');
         const data = await response.json();
-        setRepos(data);
+        setRepos(data.slice(0, limit));
       } catch (error) {
         console.error("Failed to fetch repos:", error);
       } finally {
@@ -129,7 +142,7 @@ export const GithubRepos = () => {
       }
     };
     fetchRepos();
-  }, []);
+  }, [limit]);
 
   if (loading) {
     return (

@@ -13,7 +13,7 @@ import {
   RefreshCcw,
   ExternalLink
 } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type, FunctionDeclaration } from "@google/genai";
 import ReactMarkdown from 'react-markdown';
 import { MOKHLES_DATA } from './constants';
 import { ExperienceTimeline, SkillsGrid, ContactCard, GithubRepos } from './components/GenerativeUI';
@@ -30,8 +30,49 @@ interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
-  type?: 'text' | 'experience' | 'skills' | 'contact' | 'projects';
+  uiComponent?: 'experience' | 'skills' | 'contact' | 'github';
+  uiProps?: any;
 }
+
+const tools: { functionDeclarations: FunctionDeclaration[] }[] = [{
+  functionDeclarations: [
+    {
+      name: "render_experience",
+      description: "Displays Mokhles Elheni's professional work experience and career timeline.",
+      parameters: { 
+        type: Type.OBJECT, 
+        properties: {
+          filter: { type: Type.STRING, description: "Optional keyword to filter experience (e.g. 'Amazon', 'Observability')" }
+        } 
+      }
+    },
+    {
+      name: "render_skills",
+      description: "Displays Mokhles Elheni's technical skills, programming languages, and expertise grid.",
+      parameters: { 
+        type: Type.OBJECT, 
+        properties: {
+          category: { type: Type.STRING, description: "Optional category to highlight (e.g. 'Backend', 'GenAI')" }
+        } 
+      }
+    },
+    {
+      name: "render_contact",
+      description: "Displays contact information and social links for Mokhles Elheni.",
+      parameters: { type: Type.OBJECT, properties: {} }
+    },
+    {
+      name: "render_github",
+      description: "Displays Mokhles Elheni's latest open-source projects and GitHub repositories.",
+      parameters: { 
+        type: Type.OBJECT, 
+        properties: {
+          limit: { type: Type.NUMBER, description: "Number of repositories to show (default 4)" }
+        } 
+      }
+    }
+  ]
+}];
 
 const SYSTEM_INSTRUCTION = `
 You are the AI Career Agent for Mokhles Elheni, a Senior Software Engineer at Amazon.
@@ -43,12 +84,14 @@ GitHub Profile: https://github.com/M0xoo
 
 GUIDELINES:
 1. Be professional, helpful, and concise.
-2. If the user asks about work experience, career path, or "where has he worked", respond with text and then trigger the experience component by including the exact string "[RENDER_EXPERIENCE]" in your response.
-3. If the user asks about skills, technologies, or "what does he know", respond with text and trigger the skills component by including "[RENDER_SKILLS]".
-4. If the user asks how to contact him or for his LinkedIn/Email, trigger "[RENDER_CONTACT]".
-5. If the user asks about open source, GitHub, or "what has he built", respond with text and trigger the GitHub component by including "[RENDER_GITHUB]".
-6. Use Markdown for text formatting.
-7. If asked about something not in the context, politely say you don't have that specific information but can talk about his engineering career.
+2. Use the provided tools to display rich UI components when relevant to the user's query.
+3. If the user asks about work experience, career path, or "where has he worked", call 'render_experience'.
+4. If the user asks about skills, technologies, or "what does he know", call 'render_skills'.
+5. If the user asks how to contact him or for his LinkedIn/Email, call 'render_contact'.
+6. If the user asks about open source, GitHub, or "what has he built", call 'render_github'.
+7. You can combine text responses with tool calls.
+8. Use Markdown for text formatting in your responses.
+9. If asked about something not in the context, politely say you don't have that specific information but can talk about his engineering career.
 `;
 
 export default function App() {
@@ -103,6 +146,7 @@ export default function App() {
         model: "gemini-3-flash-preview",
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
+          tools: tools,
         },
       });
 
@@ -113,8 +157,27 @@ export default function App() {
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response.text || "ERROR: RESPONSE_UNDEFINED",
+        content: response.text || "",
       };
+
+      // Handle function calls
+      if (response.functionCalls) {
+        const call = response.functionCalls[0];
+        if (call.name === 'render_experience') assistantMessage.uiComponent = 'experience';
+        if (call.name === 'render_skills') assistantMessage.uiComponent = 'skills';
+        if (call.name === 'render_contact') assistantMessage.uiComponent = 'contact';
+        if (call.name === 'render_github') assistantMessage.uiComponent = 'github';
+        
+        assistantMessage.uiProps = call.args;
+
+        // If there's no text content but a function call, provide a default lead-in
+        if (!assistantMessage.content) {
+          if (call.name === 'render_experience') assistantMessage.content = "Here is a detailed look at my professional journey:";
+          if (call.name === 'render_skills') assistantMessage.content = "I've built a diverse technical stack over the years:";
+          if (call.name === 'render_contact') assistantMessage.content = "You can reach out to me through these channels:";
+          if (call.name === 'render_github') assistantMessage.content = "Here are some of my latest open-source contributions:";
+        }
+      }
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
@@ -129,21 +192,20 @@ export default function App() {
     }
   };
 
-  const renderContent = (content: string) => {
-    const parts = content.split(/(\[RENDER_EXPERIENCE\]|\[RENDER_SKILLS\]|\[RENDER_CONTACT\]|\[RENDER_GITHUB\])/);
-    
-    return parts.map((part, index) => {
-      if (part === '[RENDER_EXPERIENCE]') return <ExperienceTimeline key={index} />;
-      if (part === '[RENDER_SKILLS]') return <SkillsGrid key={index} />;
-      if (part === '[RENDER_CONTACT]') return <ContactCard key={index} />;
-      if (part === '[RENDER_GITHUB]') return <GithubRepos key={index} />;
-      
-      return (
-        <div key={index} className="prose prose-invert max-w-none text-base leading-relaxed font-sans">
-          <ReactMarkdown>{part}</ReactMarkdown>
-        </div>
-      );
-    });
+  const renderContent = (message: Message) => {
+    return (
+      <div className="space-y-4">
+        {message.content && (
+          <div className="prose prose-invert max-w-none text-base leading-relaxed font-sans">
+            <ReactMarkdown>{message.content}</ReactMarkdown>
+          </div>
+        )}
+        {message.uiComponent === 'experience' && <ExperienceTimeline {...message.uiProps} />}
+        {message.uiComponent === 'skills' && <SkillsGrid {...message.uiProps} />}
+        {message.uiComponent === 'contact' && <ContactCard {...message.uiProps} />}
+        {message.uiComponent === 'github' && <GithubRepos {...message.uiProps} />}
+      </div>
+    );
   };
 
   return (
@@ -271,7 +333,7 @@ export default function App() {
                       "p-6 md:p-8 glass transition-all duration-500 w-fit",
                       message.role === 'user' ? "border-r-4 border-white text-right" : "border-l-4 border-neon text-left"
                     )}>
-                      {renderContent(message.content)}
+                      {renderContent(message)}
                     </div>
                     <div className={cn(
                       "mt-2 font-mono text-[9px] uppercase tracking-widest text-zinc-600",
