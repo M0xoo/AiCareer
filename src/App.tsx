@@ -30,7 +30,7 @@ export default function App() {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto p-6 md:p-12 z-10 custom-scrollbar relative">
+      <main className="flex-1 overflow-y-auto pt-24 pb-6 px-6 md:p-12 z-10 custom-scrollbar relative">
         <SocialLinks />
 
         <div className="max-w-5xl mx-auto space-y-16">

@@ -34,7 +34,7 @@ export const ExperienceTimeline = ({ filter }: { filter?: string }) => {
                 {exp.period}
               </span>
             </div>
-            <div className="flex items-center gap-4 text-sm font-mono text-zinc-400 uppercase tracking-widest">
+            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm font-mono text-zinc-400 uppercase tracking-widest">
               <span className="flex items-center gap-1.5">
                 <Briefcase size={14} className="text-neon" /> {exp.company}
               </span>

@@ -49,22 +49,22 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSuggestionC
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "flex gap-8",
+        "flex gap-3 md:gap-8",
         message.role === 'user' ? "flex-row-reverse" : "flex-row"
       )}
     >
       <div className={cn(
-        "w-12 h-12 flex-shrink-0 flex items-center justify-center border",
+        "w-8 h-8 md:w-12 md:h-12 flex-shrink-0 flex items-center justify-center border",
         message.role === 'assistant' ? "border-neon text-neon" : "border-white text-white"
       )}>
-        {message.role === 'assistant' ? <Bot size={24} /> : <User size={24} />}
+        {message.role === 'assistant' ? <Bot size={18} className="md:w-6 md:h-6" /> : <User size={18} className="md:w-6 md:h-6" />}
       </div>
       <div className={cn(
-        "max-w-3xl flex flex-col",
+        "max-w-[85%] md:max-w-3xl flex flex-col",
         message.role === 'user' ? "items-end" : "items-start"
       )}>
         <div className={cn(
-          "p-6 md:p-8 glass transition-all duration-500 w-fit",
+          "p-4 md:p-8 glass transition-all duration-500 w-fit",
           message.role === 'user' ? "border-r-4 border-white text-right" : "border-l-4 border-neon text-left"
         )}>
           {renderContent()}

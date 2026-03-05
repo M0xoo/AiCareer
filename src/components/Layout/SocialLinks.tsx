@@ -4,7 +4,7 @@ import { MOKHLES_DATA } from '../../constants';
 
 export const SocialLinks: React.FC = () => {
   return (
-    <div className="absolute top-12 right-12 flex items-center gap-4 z-50">
+    <div className="absolute top-6 right-6 md:top-12 md:right-12 flex items-center gap-4 z-50">
       <a 
         href={MOKHLES_DATA.linkedin} 
         target="_blank" 
