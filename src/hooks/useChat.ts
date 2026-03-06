@@ -18,18 +18,15 @@ export function useChat() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const isInitialMount = useRef(true);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
+    // Only scroll if a new message was added (more than the initial greeting)
+    if (messages.length > 1) {
+      scrollToBottom();
     }
-    scrollToBottom();
   }, [messages]);
 
   const handleSend = async (input: string, overrideInput?: string) => {
