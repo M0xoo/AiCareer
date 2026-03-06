@@ -1,22 +1,35 @@
 import { useState, useRef, useEffect } from 'react';
 import { Message } from '../types/chat';
 
-export function useChat() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: "SYSTEM INITIALIZED. I am the AI Career Agent for Mokhles Elheni. Senior Software Engineer @ Amazon. Specialized in high-scale platforms and GenAI. \n\nHow can I assist your inquiry today?",
-      suggestions: [
-        "What is his experience at Amazon?",
-        "Show me his technical skills",
-        "What open-source projects has he built?",
-        "How can I contact him?"
-      ]
-    }
-  ]);
+const INITIAL_GREETING: Message = {
+  id: '1',
+  role: 'assistant',
+  content: "SYSTEM INITIALIZED. I am the AI Career Agent for Mokhles Elheni. Senior Software Engineer @ Amazon. Specialized in high-scale platforms and GenAI. \n\nHow can I assist your inquiry today?",
+  suggestions: [
+    "What is his experience at Amazon?",
+    "Show me his technical skills",
+    "What open-source projects has he built?",
+    "How can I contact him?"
+  ]
+};
+
+export function useChat(startBootingFlag: boolean = true) {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isBooting, setIsBooting] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!startBootingFlag) return;
+
+    // Simulate boot sequence
+    const timer = setTimeout(() => {
+      setMessages([INITIAL_GREETING]);
+      setIsBooting(false);
+    }, 3000); // Wait for the 2.5s loading bar + half sec extra
+
+    return () => clearTimeout(timer);
+  }, [startBootingFlag]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -102,6 +115,7 @@ export function useChat() {
   return {
     messages,
     isLoading,
+    isBooting,
     handleSend,
     messagesEndRef
   };

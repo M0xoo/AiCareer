@@ -1,15 +1,40 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { AnimatePresence } from 'motion/react';
 import { useChat } from './hooks/useChat';
 import { ChatMessage } from './components/Chat/ChatMessage';
 import { ChatInput } from './components/Chat/ChatInput';
 import { ChatLoading } from './components/Chat/ChatLoading';
+import { SystemBootSequence } from './components/Chat/SystemBootSequence';
 import { Hero } from './components/Layout/Hero';
 
 import { MediumArticles } from './components/Layout/MediumArticles';
 
 export default function App() {
-  const { messages, isLoading, handleSend, messagesEndRef } = useChat();
+  const aiSectionRef = useRef<HTMLDivElement>(null);
+  const [hasScrolledToAI, setHasScrolledToAI] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasScrolledToAI(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 } // trigger when 10% visible
+    );
+
+    if (aiSectionRef.current) {
+      observer.observe(aiSectionRef.current);
+    }
+
+    return () => {
+      if (aiSectionRef.current) observer.unobserve(aiSectionRef.current);
+      observer.disconnect();
+    };
+  }, []);
+
+  const { messages, isLoading, isBooting, handleSend, messagesEndRef } = useChat(hasScrolledToAI);
 
   return (
     <div className="flex flex-col h-screen bg-ink relative overflow-hidden selection:bg-neon selection:text-black">
@@ -38,15 +63,19 @@ export default function App() {
           <MediumArticles />
 
           {/* Chat Messages */}
-          <div className="space-y-12 pb-32">
+          <div ref={aiSectionRef} className="space-y-12 pb-32 min-h-[50vh]">
             <AnimatePresence initial={false}>
-              {messages.map((message) => (
-                <ChatMessage
-                  key={message.id}
-                  message={message}
-                  onSuggestionClick={(suggestion) => handleSend('', suggestion)}
-                />
-              ))}
+              {isBooting ? (
+                hasScrolledToAI && <SystemBootSequence />
+              ) : (
+                messages.map((message) => (
+                  <ChatMessage
+                    key={message.id}
+                    message={message}
+                    onSuggestionClick={(suggestion) => handleSend('', suggestion)}
+                  />
+                ))
+              )}
             </AnimatePresence>
 
             {isLoading && <ChatLoading />}
@@ -55,7 +84,7 @@ export default function App() {
         </div>
       </main>
 
-      <ChatInput onSend={(input) => handleSend(input)} isLoading={isLoading} />
+      <ChatInput onSend={(input) => handleSend(input)} isLoading={isLoading || isBooting} />
 
       <style dangerouslySetInnerHTML={{
         __html: `

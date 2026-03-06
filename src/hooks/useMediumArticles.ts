@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 export function useMediumArticles() {
   const [articles, setArticles] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchArticles = async () => {
