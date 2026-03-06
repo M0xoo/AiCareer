@@ -5,6 +5,7 @@ import { ChatMessage } from './components/Chat/ChatMessage';
 import { ChatInput } from './components/Chat/ChatInput';
 import { ChatLoading } from './components/Chat/ChatLoading';
 import { SystemBootSequence } from './components/Chat/SystemBootSequence';
+import { Header } from './components/Layout/Header';
 import { Hero } from './components/Layout/Hero';
 
 import { MediumArticles } from './components/Layout/MediumArticles';
@@ -55,7 +56,8 @@ export default function App() {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto pt-24 pb-6 px-6 md:p-12 z-10 custom-scrollbar relative">
+      <Header />
+      <main id="main-scroll-container" className="flex-1 overflow-y-auto pt-24 pb-6 px-6 md:p-12 z-10 custom-scrollbar relative">
 
 
         <div className="max-w-5xl mx-auto space-y-16">

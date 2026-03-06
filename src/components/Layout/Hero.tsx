@@ -1,5 +1,4 @@
 import React from 'react';
-import { SocialLinks } from './SocialLinks';
 import { GlitchText } from '../ui/GlitchText';
 import { TypewriterText } from '../ui/TypewriterText';
 
@@ -19,7 +18,6 @@ export const Hero: React.FC = () => {
         </div>
 
         <div className="flex flex-col justify-between items-start md:items-end w-full md:w-auto mt-8 md:mt-0">
-          <SocialLinks className="mb-8 md:mb-0" />
           <div className="max-w-sm text-left md:text-right font-mono text-[12px] md:text-[14px] text-zinc-500 uppercase leading-relaxed mt-auto">
             <span className="text-white block mb-2">INTRODUCTION //</span>
             Senior Software Engineer with 8+ years of experience architecting high-scale observability platforms and leveraging GenAI to optimize complex workflows at scale.

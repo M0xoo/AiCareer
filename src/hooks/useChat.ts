@@ -32,7 +32,15 @@ export function useChat(startBootingFlag: boolean = true) {
   }, [startBootingFlag]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = document.getElementById('main-scroll-container');
+    if (container) {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: "smooth"
+      });
+    } else {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
