@@ -4,7 +4,7 @@ import Parser from "rss-parser";
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
   const parser = new Parser();
 
   // API Route for Medium Articles
