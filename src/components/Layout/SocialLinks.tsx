@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Mail } from 'lucide-react';
+import { Linkedin, Calendar } from 'lucide-react';
 import { MOKHLES_DATA } from '../../constants';
 
 interface SocialLinksProps {
@@ -18,10 +18,12 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({ className = "" }) => {
         <Linkedin size={20} className="group-hover:text-neon transition-colors" />
       </a>
       <a
-        href={`mailto:${MOKHLES_DATA.email}`}
+        href="https://calendly.com/moelheni/taking-contact"
+        target="_blank"
+        rel="noopener noreferrer"
         className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:border-neon transition-colors cursor-pointer group bg-ink/50 backdrop-blur-md"
       >
-        <Mail size={20} className="group-hover:text-neon transition-colors" />
+        <Calendar size={20} className="group-hover:text-neon transition-colors" />
       </a>
     </div>
   );
