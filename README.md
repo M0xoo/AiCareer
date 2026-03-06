@@ -1,3 +1,7 @@
+# AiCareer
+
+AiCareer is an AI-powered career assistant and interactive portfolio for [Mokhles Elheni](https://mokh.xyz).
+
 ## Run Locally
 
 **Prerequisites:**  Node.js
