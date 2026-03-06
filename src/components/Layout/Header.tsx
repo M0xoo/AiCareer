@@ -20,7 +20,7 @@ export const Header: React.FC = () => {
                         <GlitchText text="ARTICLES" />
                     </a>
                     <a
-                        href="https://github.com/elhenimokhles"
+                        href="https://github.com/M0xoo"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-mono text-[10px] md:text-[12px] text-white uppercase tracking-widest hover:text-neon transition-colors"
