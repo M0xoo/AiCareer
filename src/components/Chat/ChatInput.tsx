@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, Terminal } from 'lucide-react';
+import { CornerDownLeft, Terminal } from 'lucide-react';
 
 interface ChatInputProps {
   onSend: (input: string) => void;
@@ -19,7 +19,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isLoading }) => {
     <footer className="fixed bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 w-[92%] md:w-[90%] max-w-3xl z-20">
       <div className="relative group">
         <div className="absolute inset-0 bg-neon/20 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
-        <div className="relative flex items-center bg-zinc-900/90 backdrop-blur-xl border border-white/10 rounded-full pl-4 md:pl-8 pr-2 md:pr-4 shadow-2xl h-14 md:h-20">
+        <div className="relative flex items-center bg-zinc-900/90 backdrop-blur-xl border border-white/10 rounded-sm pl-4 md:pl-8 pr-2 md:pr-4 shadow-2xl h-14 md:h-20">
           <Terminal size={20} className="text-neon mr-3 md:mr-4 flex-shrink-0" />
           <input
             type="text"
@@ -32,9 +32,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isLoading }) => {
           <button
             onClick={handleSubmit}
             disabled={!input.trim() || isLoading}
-            className="ml-2 md:ml-4 w-10 h-10 md:w-12 md:h-12 rounded-full bg-neon text-black flex items-center justify-center hover:scale-110 active:scale-90 transition-all disabled:opacity-30 flex-shrink-0"
+            className="ml-2 md:ml-4 w-10 h-10 md:w-12 md:h-12 rounded-sm bg-neon/10 border border-neon text-neon flex items-center justify-center hover:bg-neon hover:text-black hover:scale-105 active:scale-95 transition-all disabled:opacity-30 disabled:hover:bg-neon/10 disabled:hover:text-neon flex-shrink-0"
           >
-            <Send size={18} />
+            <CornerDownLeft size={20} strokeWidth={2.5} />
           </button>
         </div>
       </div>
