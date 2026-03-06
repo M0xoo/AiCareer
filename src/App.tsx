@@ -5,7 +5,7 @@ import { ChatMessage } from './components/Chat/ChatMessage';
 import { ChatInput } from './components/Chat/ChatInput';
 import { ChatLoading } from './components/Chat/ChatLoading';
 import { Hero } from './components/Layout/Hero';
-import { SocialLinks } from './components/Layout/SocialLinks';
+
 import { MediumArticles } from './components/Layout/MediumArticles';
 
 export default function App() {
@@ -15,11 +15,11 @@ export default function App() {
     <div className="flex flex-col h-screen bg-ink relative overflow-hidden selection:bg-neon selection:text-black">
       {/* Grainy Overlay */}
       <div className="absolute inset-0 grainy-bg z-50 pointer-events-none" />
-      
+
       {/* Atmospheric Background Elements */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-white/5 blur-[100px] rounded-full pointer-events-none" />
-      
+
       {/* Floating Shape */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-10 pointer-events-none floating-shape">
         <div className="w-full h-full rounded-full border border-white/20 flex items-center justify-center">
@@ -31,7 +31,7 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto pt-24 pb-6 px-6 md:p-12 z-10 custom-scrollbar relative">
-        <SocialLinks />
+
 
         <div className="max-w-5xl mx-auto space-y-16">
           <Hero />
@@ -41,14 +41,14 @@ export default function App() {
           <div className="space-y-12 pb-32">
             <AnimatePresence initial={false}>
               {messages.map((message) => (
-                <ChatMessage 
-                  key={message.id} 
-                  message={message} 
-                  onSuggestionClick={(suggestion) => handleSend('', suggestion)} 
+                <ChatMessage
+                  key={message.id}
+                  message={message}
+                  onSuggestionClick={(suggestion) => handleSend('', suggestion)}
                 />
               ))}
             </AnimatePresence>
-            
+
             {isLoading && <ChatLoading />}
             <div ref={messagesEndRef} />
           </div>
@@ -57,7 +57,8 @@ export default function App() {
 
       <ChatInput onSend={(input) => handleSend(input)} isLoading={isLoading} />
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
         }
