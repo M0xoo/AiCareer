@@ -54,10 +54,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSuggestionC
       )}
     >
       <div className={cn(
-        "w-8 h-8 md:w-12 md:h-12 flex-shrink-0 flex items-center justify-center border",
-        message.role === 'assistant' ? "border-neon text-neon" : "border-white text-white"
+        "w-8 h-8 md:w-12 md:h-12 flex-shrink-0 flex items-center justify-center",
+        message.role === 'assistant' ? "text-neon" : "text-white"
       )}>
-        {message.role === 'assistant' ? <img src="/favicon.png" alt="AI" className="w-10/12 h-10/12 md:w-10 md:h-10 object-contain" /> : <User size={18} className="w-[18px] h-[18px] md:w-6 md:h-6" />}
+        {message.role === 'assistant' ? <img src="/favicon.png" alt="AI" className="w-full h-full object-contain" /> : <User size={18} className="w-[18px] h-[18px] md:w-6 md:h-6" />}
       </div>
       <div className={cn(
         "max-w-[85%] md:max-w-3xl flex flex-col",
