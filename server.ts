@@ -1,9 +1,88 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import Parser from "rss-parser";
+import { GoogleGenAI, Type, FunctionDeclaration } from "@google/genai";
+import { MOKHLES_DATA } from "./src/constants";
+
+const tools: { functionDeclarations: FunctionDeclaration[] }[] = [{
+  functionDeclarations: [
+    {
+      name: "render_experience",
+      description: "Displays Mokhles Elheni's professional work experience and career timeline.",
+      parameters: {
+        type: Type.OBJECT,
+        properties: {
+          filter: { type: Type.STRING, description: "Optional keyword to filter experience (e.g. 'Amazon', 'Observability')" }
+        }
+      }
+    },
+    {
+      name: "render_skills",
+      description: "Displays Mokhles Elheni's technical skills, programming languages, and expertise grid.",
+      parameters: {
+        type: Type.OBJECT,
+        properties: {
+          category: { type: Type.STRING, description: "Optional category to highlight (e.g. 'Backend', 'GenAI')" }
+        }
+      }
+    },
+    {
+      name: "render_contact",
+      description: "Displays contact information and social links for Mokhles Elheni.",
+      parameters: { type: Type.OBJECT, properties: {} }
+    },
+    {
+      name: "render_github",
+      description: "Displays Mokhles Elheni's latest open-source projects and GitHub repositories.",
+      parameters: {
+        type: Type.OBJECT,
+        properties: {
+          limit: { type: Type.NUMBER, description: "Number of repositories to show (default 4)" }
+        }
+      }
+    },
+    {
+      name: "provide_suggestions",
+      description: "Provides 3-4 smart, conversation-aware follow-up questions or suggestions for the user to click.",
+      parameters: {
+        type: Type.OBJECT,
+        properties: {
+          suggestions: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING },
+            description: "List of 3-4 short, relevant follow-up questions."
+          }
+        },
+        required: ["suggestions"]
+      }
+    }
+  ]
+}];
+
+const SYSTEM_INSTRUCTION = `
+You are the AI Career Agent for Mokhles Elheni, a Senior Software Engineer at Amazon.
+Your goal is to represent Mokhles professionally and help users (recruiters, managers, collaborators) learn about his background.
+
+CONTEXT ABOUT MOKHLES:
+${JSON.stringify(MOKHLES_DATA, null, 2)}
+GitHub Profile: https://github.com/M0xoo
+
+GUIDELINES:
+1. Be professional, helpful, and concise.
+2. Use the provided tools to display rich UI components when relevant to the user's query.
+3. ALWAYS call 'provide_suggestions' at the end of your response to give the user relevant next steps.
+4. If the user asks about work experience, career path, or "where has he worked", call 'render_experience'.
+5. If the user asks about skills, technologies, or "what does he know", call 'render_skills'.
+6. If the user asks how to contact him or for his LinkedIn/Email, call 'render_contact'.
+7. If the user asks about open source, GitHub, or "what has he built", call 'render_github'.
+8. You can combine text responses with multiple tool calls.
+9. Use Markdown for text formatting in your responses.
+10. If asked about something not in the context, politely say you don't have that specific information but can talk about his engineering career.
+`;
 
 async function startServer() {
   const app = express();
+  app.use(express.json());
   const PORT = Number(process.env.PORT) || 3000;
   const parser = new Parser();
 
@@ -48,6 +127,37 @@ async function startServer() {
     } catch (error) {
       console.error("Error fetching GitHub repos:", error);
       res.status(500).json({ error: "Failed to fetch repositories" });
+    }
+  });
+
+  // API Route for Chat
+  app.post("/api/chat", async (req, res) => {
+    try {
+      const { message } = req.body;
+      if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const chat = ai.chats.create({
+        model: "gemini-3-flash-preview",
+        config: {
+          systemInstruction: SYSTEM_INSTRUCTION,
+          tools: tools,
+        },
+      });
+
+      const response = await chat.sendMessage({
+        message: message,
+      });
+
+      res.json({
+        text: response.text,
+        functionCalls: response.functionCalls
+      });
+    } catch (error) {
+      console.error("Error calling Gemini API:", error);
+      res.status(500).json({ error: "Failed to fetch AI response" });
     }
   });
 
