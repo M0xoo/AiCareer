@@ -50,7 +50,7 @@ export const Header: React.FC = () => {
                         rel="noopener noreferrer"
                         className="font-mono text-[10px] md:text-[12px] text-white uppercase tracking-widest hover:text-neon transition-colors"
                     >
-                        <GlitchText text="CALENDAR" />
+                        <GlitchText text="TAKE CONTACT" />
                     </a>
                 </div>
             </div>
