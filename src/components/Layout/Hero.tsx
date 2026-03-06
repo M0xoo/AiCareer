@@ -1,16 +1,20 @@
 import React from 'react';
 import { SocialLinks } from './SocialLinks';
+import { GlitchText } from '../ui/GlitchText';
+import { TypewriterText } from '../ui/TypewriterText';
 
 export const Hero: React.FC = () => {
   return (
     <section className="py-12 md:py-24 border-b border-white/5">
       <div className="flex flex-col md:flex-row items-start justify-between gap-8 md:items-stretch">
         <div className="flex flex-col">
-          <h2 className="font-display text-[12vw] md:text-[8vw] leading-[0.8] uppercase tracking-tighter">
-            MOKHLES <br /> ELHENI
+          <h2 className="font-display text-[12vw] md:text-[8vw] leading-[0.8] uppercase tracking-tighter cursor-crosshair">
+            <GlitchText text="MOKHLES" /> <br /> <GlitchText text="ELHENI" />
           </h2>
-          <span className="font-mono text-neon text-[4vw] md:text-[1.5vw] tracking-[0.3em] mt-4 md:mt-6 uppercase block">
-            SOFTWARE ENGINEER
+          <span className="font-mono text-neon text-[3.5vw] md:text-[1.2vw] tracking-[0.3em] mt-4 md:mt-6 uppercase block min-h-[1.5em] md:min-h-auto flex items-center">
+            <TypewriterText
+              words={['SOFTWARE ENGINEER', 'AI ENTHUSIAST', 'SYSTEM ARCHITECT', 'PROBLEM SOLVER']}
+            />
           </span>
         </div>
 
