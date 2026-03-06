@@ -3,6 +3,8 @@ import { createServer as createViteServer } from "vite";
 import Parser from "rss-parser";
 import { GoogleGenAI, Type, FunctionDeclaration } from "@google/genai";
 import { MOKHLES_DATA } from "./src/constants";
+import fs from "fs";
+import path from "path";
 
 const tools: { functionDeclarations: FunctionDeclaration[] }[] = [{
   functionDeclarations: [
@@ -59,12 +61,24 @@ const tools: { functionDeclarations: FunctionDeclaration[] }[] = [{
   ]
 }];
 
+let agentKnowledge = "";
+try {
+  agentKnowledge = fs.readFileSync(path.join(process.cwd(), "agent_knowledge.md"), "utf-8");
+} catch (e) {
+  console.warn("Could not load agent_knowledge.md");
+}
+
 const SYSTEM_INSTRUCTION = `
 You are the AI Career Agent for Mokhles Elheni, a Senior Software Engineer at Amazon.
 Your goal is to represent Mokhles professionally and help users (recruiters, managers, collaborators) learn about his background.
 
 CONTEXT ABOUT MOKHLES:
 ${JSON.stringify(MOKHLES_DATA, null, 2)}
+
+ADDITIONAL KNOWLEDGE:
+${agentKnowledge}
+
+
 GitHub Profile: https://github.com/M0xoo
 
 GUIDELINES:
