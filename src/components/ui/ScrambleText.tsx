@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
 
@@ -10,19 +10,21 @@ interface ScrambleTextProps {
 
 export const ScrambleText: React.FC<ScrambleTextProps> = ({ text, className, scrambleOnHover = true }) => {
     const [displayText, setDisplayText] = useState(text);
-    const [isScrambling, setIsScrambling] = useState(false);
+    const isScrambling = useRef(false);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const scramble = useCallback(() => {
-        if (isScrambling) return;
-        setIsScrambling(true);
+        if (isScrambling.current) return;
+        isScrambling.current = true;
 
         let iteration = 0;
         const maxIterations = text.length;
 
-        const interval = setInterval(() => {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+
+        intervalRef.current = setInterval(() => {
             setDisplayText(prev => {
-                return prev.split("").map((letter, index) => {
-                    // Keep spaces as spaces to maintain word structure
+                return text.split("").map((_, index) => {
                     if (text[index] === ' ') return ' ';
                     if (text[index] === '\n') return '\n';
 
@@ -34,21 +36,21 @@ export const ScrambleText: React.FC<ScrambleTextProps> = ({ text, className, scr
             });
 
             if (iteration >= maxIterations) {
-                clearInterval(interval);
-                setIsScrambling(false);
-                // Ensure the final text matches exactly
+                if (intervalRef.current) clearInterval(intervalRef.current);
+                isScrambling.current = false;
                 setDisplayText(text);
             }
 
-            iteration += 1 / 3; // speed
-        }, 30);
-
-        return () => clearInterval(interval);
-    }, [text, isScrambling]);
+            iteration += 1;
+        }, 15);
+    }, [text]);
 
     useEffect(() => {
         scramble();
-    }, [scramble]);
+        return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+        };
+    }, []); // Run ONLY once on mount
 
     return (
         <span

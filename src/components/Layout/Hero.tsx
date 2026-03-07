@@ -1,6 +1,6 @@
 import React from 'react';
 import { GlitchText } from '../ui/GlitchText';
-import { TypewriterText } from '../ui/TypewriterText';
+import { ScrambleText } from '../ui/ScrambleText';
 
 export const Hero: React.FC = () => {
   return (
@@ -10,10 +10,8 @@ export const Hero: React.FC = () => {
           <h2 className="font-display text-[12vw] md:text-[8vw] leading-[0.8] uppercase tracking-tighter cursor-crosshair">
             <GlitchText text="MOKHLES" /> <br /> <GlitchText text="ELHENI" />
           </h2>
-          <span className="font-mono text-neon text-[3.5vw] md:text-[1.2vw] tracking-[0.3em] mt-4 md:mt-6 uppercase block min-h-[1.5em] md:min-h-auto flex items-center">
-            <TypewriterText
-              words={['SOFTWARE ENGINEER', 'AI ENTHUSIAST', 'SYSTEM ARCHITECT', 'PROBLEM SOLVER']}
-            />
+          <span className="font-mono text-neon text-[2.5vw] md:text-[0.9vw] tracking-[0.2em] mt-4 md:mt-3 uppercase block min-h-[1.5em] md:min-h-auto flex items-center">
+            <ScrambleText text="SOFTWARE ENGINEER — EX AMAZON, CRITEO" className="cursor-crosshair" scrambleOnHover={false} />
           </span>
         </div>
 
