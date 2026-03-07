@@ -8,7 +8,7 @@ import { SystemBootSequence } from './components/Chat/SystemBootSequence';
 import { Header } from './components/Layout/Header';
 import { Hero } from './components/Layout/Hero';
 
-import { MediumArticles } from './components/Layout/MediumArticles';
+import { PortfolioSection } from './components/Layout/PortfolioSection';
 
 export default function App() {
   const aiSectionRef = useRef<HTMLDivElement>(null);
@@ -62,7 +62,7 @@ export default function App() {
 
         <div className="max-w-5xl mx-auto space-y-16">
           <Hero />
-          <MediumArticles />
+          <PortfolioSection />
 
           {/* Chat Messages */}
           <div ref={aiSectionRef} className="space-y-12 pb-32 min-h-[50vh]">
