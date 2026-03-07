@@ -4,7 +4,7 @@ import { TypewriterText } from '../ui/TypewriterText';
 
 export const Hero: React.FC = () => {
   return (
-    <section className="py-12 md:py-24 border-b border-white/5">
+    <section className="pt-12 pb-6 md:py-24 border-b border-white/5">
       <div className="flex flex-col md:flex-row items-start justify-between gap-8 md:items-stretch">
         <div className="flex flex-col">
           <h2 className="font-display text-[12vw] md:text-[8vw] leading-[0.8] uppercase tracking-tighter cursor-crosshair">

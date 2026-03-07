@@ -11,7 +11,7 @@ export const PortfolioSection: React.FC = () => {
     const isExperiences = activeTab === 'experiences';
 
     return (
-        <section className="py-12 border-b border-white/5">
+        <section className="py-8 md:py-12 border-b border-white/5">
             {/* SECTION HEADER & TABS */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
 

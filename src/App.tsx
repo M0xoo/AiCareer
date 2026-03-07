@@ -60,7 +60,7 @@ export default function App() {
       <main id="main-scroll-container" className="flex-1 overflow-y-auto pt-24 pb-6 px-6 md:p-12 z-10 custom-scrollbar relative">
 
 
-        <div className="max-w-5xl mx-auto space-y-16">
+        <div className="max-w-5xl mx-auto space-y-8 md:space-y-16">
           <Hero />
           <PortfolioSection />
 
