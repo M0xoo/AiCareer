@@ -6,10 +6,10 @@ const INITIAL_GREETING: Message = {
   role: 'assistant',
   content: "SYSTEM INITIALIZED. I am the AI Career Agent for Mokhles Elheni. Senior Software Engineer @ Amazon. Specialized in high-scale platforms and GenAI. \n\nHow can I assist your inquiry today?",
   suggestions: [
-    "What is his experience at Amazon?",
-    "Show me his technical skills",
-    "What open-source projects has he built?",
-    "How can I contact him?"
+    "What is your experience at Amazon?",
+    "Show me your technical skills",
+    "What open-source projects have you built?",
+    "How can I contact you?"
   ]
 };
 
